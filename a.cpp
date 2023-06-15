@@ -228,6 +228,7 @@ void merge_(int arr[], int l, int mid, int r)
         j = j + 1;
         k = k + 1;
     }
+    return;
 }
 
 void merge_sort(int arr[], int l, int r)
@@ -239,6 +240,7 @@ void merge_sort(int arr[], int l, int r)
         merge_sort(arr, mid + 1, r);
         merge_(arr, l, mid, r);
     }
+    return;
 }
 
 // --------------------------------------------------------------------------------------------------------------
@@ -248,6 +250,7 @@ void swap(int arr[], int i, int j)
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
+    return;
 }
 
 int partition(int arr[], int l, int r)
@@ -277,6 +280,7 @@ void quicksort(int arr[], int l, int r)
         quicksort(arr, l, pivot - 1);
         quicksort(arr, pivot + 1, r);
     }
+    return;
 }
 
 // --------------------------------------------------------------------------------------------------------------
@@ -324,6 +328,7 @@ void subsets(int arr[], int n)
         }
         cout << endl;
     }
+    return;
 }
 
 // --------------------------------------------------------------------------------------------------------------
@@ -355,6 +360,7 @@ void unique(int arr[], int n)
 
     cout << newxor << endl;
     cout << (tempxor ^ newxor) << endl;
+    return;
 }
 
 // --------------------------------------------------------------------------------------------------------------
@@ -412,7 +418,257 @@ void permutation(vector<int> a)
         }
         cout << endl;
     }
+    return;
 }
+
+// --------------------------------------------------------------------------------------------------------------
+
+void Count_sort(int arr[], int n)
+{
+    int k = arr[0];
+
+    for (int i = 0; i < n; i = i + 1)
+    {
+        k = max(k, arr[i]);
+    }
+
+    int count[100];
+
+    for (int i = 0; i < n; i = i + 1)
+    {
+        count[arr[i]] = count[arr[i]] + 1;
+    }
+
+    for (int i = 1; i <= k; i = i + 1)
+    {
+        count[i] = count[i] + count[i - 1];
+    }
+
+    int output[n];
+    for (int i = n - 1; i >= 0; i = i - 1)
+    {
+        count[arr[i]] = count[arr[i]] - 1;
+        output[count[arr[i]]] = arr[i];
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << output[i] << " ";
+    }
+    return;
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
+void dnf_sort(int arr[], int n) // can sort any three consecutive numbers in an array
+{
+    int low = 0;
+    int mid = 0;
+    int high = n - 1;
+
+    while (mid <= high)
+    {
+        if (arr[mid] == -1)
+        {
+            swap(arr, low, mid);
+            low = low + 1;
+            mid = mid + 1;
+        }
+        else if (arr[mid] == 0)
+        {
+            mid = mid + 1;
+        }
+        else
+        {
+            swap(arr, mid, high);
+            high = high - 1;
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << arr[i] << " ";
+    }
+
+    return;
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
+void wave_sort(int arr[], int n)
+{
+    for (int i = 0; i < n; i = i + 1)
+    {
+        if (arr[i] > arr[i - 1])
+        {
+            swap(arr, i, i - 1);
+        }
+
+        if (arr[i] > arr[i + 1] && i <= n - 2)
+        {
+            swap(arr, i, i + 1);
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << arr[i] << " ";
+    }
+
+    return;
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
+long long inv_merge_(int arr[], int l, int mid, int r)
+{
+    long long inv = 0; // new
+    int n1 = mid - l + 1;
+    int n2 = r - mid;
+
+    int a[n1], b[n2];
+
+    for (int i = 0; i < n1; i = i + 1)
+    {
+        a[i] = arr[l + i];
+    }
+
+    for (int i = 0; i < n2; i = i + 1)
+    {
+        b[i] = arr[mid + 1 + i];
+    }
+
+    int i = 0, j = 0, k = l;
+
+    while (i < n1 && j < n2)
+    {
+        if (a[i] < b[j])
+        {
+            arr[k] = a[i];
+            i = i + 1;
+        }
+        else
+        {
+            arr[k] = b[j];
+            j = j + 1;
+
+            inv = inv + n1 - i; // a[i] > b[j] and i < j
+        }
+        k = k + 1;
+    }
+
+    while (i < n1)
+    {
+        arr[k] = a[i];
+        i = i + 1;
+        k = k + 1;
+    }
+
+    while (j < n2)
+    {
+        arr[k] = b[j];
+        j = j + 1;
+        k = k + 1;
+    }
+
+    return inv;
+}
+
+long long inv_merge_sort(int arr[], int l, int r)
+{
+    long long inv = 0; // new
+    if (l < r)
+    {
+        int mid = (l + r) / 2;
+        inv = inv + inv_merge_sort(arr, l, mid);     // new
+        inv = inv + inv_merge_sort(arr, mid + 1, r); // new
+        inv = inv + inv_merge_(arr, l, mid, r);      // new
+    }
+    return inv;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+bool three_sum_prob(vector<int> a, int n, int x)
+{
+
+    sort(a.begin(), a.end());
+
+    for (int i = 0; i < n; i = i + 1)
+    {
+        int low = i + 1, high = n - 1;
+        while (low < high)
+        {
+            int current = a[i] + a[low] + a[high];
+            if (current == x)
+            {
+                cout << "pair: " << a[i] << " " << a[low] << " " << a[high];
+                return true;
+            }
+            else if (current < x)
+            {
+                low = low + 1;
+            }
+            else
+            {
+                high = high - 1;
+            }
+        }
+    }
+
+    cout << " no such pair";
+    return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+void max_consecutive_ones(vector<int> a, int k)
+{
+    int zero_count = 0;
+    int i = 0;
+    int ans = 0;
+
+    for (int j = 0; j < a.size(); j = j + 1)
+    {
+        if (a[j] == 0)
+        {
+            zero_count = zero_count + 1;
+        }
+        while (zero_count > k)
+        {
+            if (a[i] == 0)
+            {
+                zero_count = zero_count - 1;
+            }
+            i = i + 1;
+        }
+        ans = max(ans, j - i + 1);
+    }
+    cout << ans;
+    return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+void longest_substring_without_repetition(string s)
+{
+    vector<int> dict(256, -1);
+    int max_length = 0;
+    int start = -1;
+
+    for (int i = 0; i < s.size(); i = i + 1)
+    {
+        if (dict[s[i]] > start)
+        {
+            start = dict[s[i]];
+        }
+        dict[s[i]] = i;
+        max_length = max(max_length, i - start);
+    }
+    cout << max_length;
+    return;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 
@@ -584,12 +840,25 @@ int main()
 
     // permutation combination------------------------------------------------------------------
     /*  int n;
-     cin >> n;
+      cin >> n;
 
-     vector<int> a(n);
-     for (auto &i : a)
-     {
-         cin >> i;
-     }
-     permutation(a); */
+      vector<int> a(n);
+      for (auto &i : a)
+      {
+          cin >> i;
+      }
+      permutation(a); */
+
+    // count sort and dnf sort
+    /*   int arr[] = {-1, 1, 0, 0, 1, -1, -1, 0, 1, -1};
+
+       dnf_sort(arr, 10); */
+
+    // sum of 3 elements in array equal to target
+
+    string s;
+    cin >> s;
+
+    longest_substring_without_repetition(s);
+    return 0;
 }
